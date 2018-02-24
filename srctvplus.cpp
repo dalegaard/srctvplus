@@ -4,7 +4,9 @@
 #include "windows.h"
 #endif
 
+#ifndef NULL
 #define NULL nullptr
+#endif
 #include "FunctionRoute.h"
 
 #include "interface.h"
