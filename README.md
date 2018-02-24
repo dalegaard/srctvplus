@@ -3,6 +3,12 @@ SrcTV+
 
 Makes SrcTV send everything. For Team Fortress 2.
 
+Installation
+------------
+
+Copy `srctvplus.so`(Linux) or `srctvplus.dll`(Windows) along with `srctvplus.vdf`
+into `<TF2>/tf/custom/srctvplus/addons/`.
+
 Compiling
 ---------
 
