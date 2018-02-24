@@ -13,15 +13,20 @@ into `<TF2>/tf/custom/srctvplus/addons/`.
 Compiling
 ---------
 
-Linux:
+### Linux:
 ```
 $ git submodule init
 $ git submodule update
 $ ./build.sh
 ```
 
-Windows:
-`TODO`
+### Windows:
+Open srctvplus.sln in Visual Studio 2017. Select 'Release' configuration.
+Press `F6` to build. Resulting file will be in `Release/srctvplus.dll`.
+
+Note that building requires the Visual Studio 2013 Build Tools(v120).
+This is included in 
+[Visual Studio 2013 Community Edition](https://go.microsoft.com/fwlink/?LinkId=532495&clcid=0x409).
 
 Credits
 -------

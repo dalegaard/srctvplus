@@ -1,2 +1,6 @@
 srctvplus.o
 srctvplus.so
+Release/
+Debug/
+.vs/
+*.user
