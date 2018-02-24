@@ -1,0 +1,7 @@
+[submodule "vendor/tftrue"]
+	path = vendor/tftrue
+	url = https://github.com/AnAkkk/TFTrue
+[submodule "vendor/sdk"]
+	path = vendor/sdk
+	url = https://github.com/alliedmodders/hl2sdk
+	branch = tf2
