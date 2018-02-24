@@ -1,7 +1,8 @@
 SrcTV+
 ======
 
-Makes SrcTV send everything. For Team Fortress 2.
+Makes SrcTV send everything. For Team Fortress 2. Adds a small amount of extra
+network traffic.
 
 Installation
 ------------
