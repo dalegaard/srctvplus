@@ -36,6 +36,7 @@
 IServerGameDLL* g_pGameDLL;
 IFileSystem* g_pFileSystem;
 IHLTVDirector* g_pHLTVDirector;
+IVEngineServer* engine;
 
 class SrcTVPlus : public IServerPluginCallbacks {
 public:
@@ -88,13 +89,19 @@ typedef void* (*SendTableProxyFn)(
 // Calls a sendproxy and adds the HLTV pseudo client to the returned recipients list
 void* SendProxy_IncludeHLTV(SendTableProxyFn fn, const SendProp* pProp, const void* pStructBase, const void* pData, CSendProxyRecipients* pRecipients, int objectID) {
   const char* ret = (const char*)fn(pProp, pStructBase, pData, pRecipients, objectID);
-  if(ret) {
-    auto server = g_pHLTVDirector->GetHLTVServer();
-    if(server) {
-      auto slot = server->GetHLTVSlot();
-      if(slot >= 0) {
-        pRecipients->m_Bits.Set(slot);
+  if (ret) {
+    if (engine->IsDedicatedServer()) {
+      // Normal dedicated server
+      auto server = g_pHLTVDirector->GetHLTVServer();
+      if (server) {
+        auto slot = server->GetHLTVSlot();
+        if (slot >= 0) {
+          pRecipients->m_Bits.Set(slot);
+        }
       }
+    } else {
+      // Listen server
+      pRecipients->m_Bits.Set(0);
     }
   }
   return (void*)ret;
@@ -210,6 +217,12 @@ bool SrcTVPlus::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameS
   g_pGameDLL = (IServerGameDLL*)gameServerFactory(INTERFACEVERSION_SERVERGAMEDLL, nullptr);
   if(!g_pGameDLL) {
     Error("[srctv+] Could not find game DLL interface, aborting load\n");
+    return false;
+  }
+
+  engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, nullptr);
+  if (!engine) {
+    Error("[srctv+] Could not find engine interface, aborting load\n");
     return false;
   }
 
