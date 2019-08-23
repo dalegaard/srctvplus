@@ -10,6 +10,13 @@ Installation
 Copy `srctvplus.so`(Linux) or `srctvplus.dll`(Windows) along with `srctvplus.vdf`
 into `<TF2>/tf/custom/srctvplus/addons/`.
 
+### Network traffic usage
+
+The plugin works by having the game server send the SrcTV clients more data,
+and therefore the default `tv_maxrate 8000` may not be enough in all cases.
+This is especially true at high `tv_snapshotrate`. It's therefore recommended
+to set at least `tv_maxrate 20000` or if possible, `tv_maxrate 0`.
+
 Compiling
 ---------
 
