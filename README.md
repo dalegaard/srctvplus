@@ -8,7 +8,7 @@ Installation
 ------------
 
 Copy `srctvplus.so`(Linux) or `srctvplus.dll`(Windows) along with `srctvplus.vdf`
-into `<TF2>/tf/custom/srctvplus/addons/`.
+into `<TF2>/tf/addons/`.
 
 ### Network traffic usage
 
