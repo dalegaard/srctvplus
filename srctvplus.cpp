@@ -33,9 +33,6 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-// Needed after 2022-06-21 update, until SDK is updated
-#define INTERFACEVERSION_SERVERGAMEDLL "ServerGameDLL011"
-
 IServerGameDLL* g_pGameDLL;
 IFileSystem* g_pFileSystem;
 IHLTVDirector* g_pHLTVDirector;
