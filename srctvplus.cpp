@@ -29,6 +29,9 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -211,29 +214,57 @@ SendProp* GetSendProp(const char* tblname, const char* propname) {
   return GetSendPropInTable(tbl, propname);
 }
 
+void* search_interface(CreateInterfaceFn factory, const char* name) {
+  const char* end = name + strlen(name) - 1;
+  int digits = 0;
+  while (end > name && isdigit(*end) && digits <= 3) {
+    end--;
+    digits++;
+  }
+
+  if (digits > 0) {
+    std::string ifname(name, strlen(name) - digits);
+
+    int max = 1;
+    for(auto i = 1; i <= digits; i++) {
+      max *= 10;
+    }
+    for(auto i = 0; i < max; i++) {
+      std::stringstream tmp;
+      tmp << ifname << std::setfill('0') << std::setw(digits) << i;
+      auto ret = factory(tmp.str().c_str(), nullptr);
+      if (ret)
+        return ret;
+    }
+  }
+
+  // Fallback: try original name
+  return factory(name, nullptr);
+}
+
 bool SrcTVPlus::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory) {
   Warning("[srctv+] Loading...\n");
 
-  g_pGameDLL = (IServerGameDLL*)gameServerFactory(INTERFACEVERSION_SERVERGAMEDLL, nullptr);
+  g_pGameDLL = (IServerGameDLL*)search_interface(gameServerFactory, INTERFACEVERSION_SERVERGAMEDLL);
   if(!g_pGameDLL) {
     Error("[srctv+] Could not find game DLL interface, aborting load\n");
     return false;
   }
 
-  engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, nullptr);
+  engine = (IVEngineServer*)search_interface(interfaceFactory, INTERFACEVERSION_VENGINESERVER);
   if (!engine) {
     Error("[srctv+] Could not find engine interface, aborting load\n");
     return false;
   }
 
-  g_pFileSystem = (IFileSystem*)interfaceFactory(FILESYSTEM_INTERFACE_VERSION, nullptr);
+  g_pFileSystem = (IFileSystem*)search_interface(interfaceFactory, FILESYSTEM_INTERFACE_VERSION);
   if(!g_pFileSystem) {
     Error("[srctv+] Could not find filesystem interface, aborting load\n");
     return false;
   }
 
   // HLTV director mod events hook, for sending all events to the HLTV client
-  g_pHLTVDirector = (IHLTVDirector*)gameServerFactory(INTERFACEVERSION_HLTVDIRECTOR, nullptr);
+  g_pHLTVDirector = (IHLTVDirector*)search_interface(gameServerFactory, INTERFACEVERSION_HLTVDIRECTOR);
   if(!g_pHLTVDirector) {
     Error("[srctv+] Could not find SrcTV director, aborting load\n");
     return false;
